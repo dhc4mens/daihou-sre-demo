@@ -1,42 +1,157 @@
-# {{PROJECT_NAME}}
+# daihou-sre-demo — SRE基盤デモリポジトリ
 
-> {{ONE_LINE_DESCRIPTION}}
+> だいほう合同会社のSRE基盤（daihou-sre / private）から、設計思想・実装パターン・運用ドキュメントを公開用に抽出したデモリポジトリです。
 
-## 概要
+**Portfolio:** https://dhc4mens.github.io/portfolio/
 
-（プロジェクトの目的・機能を記述）
+---
+
+## このリポが証明できること
+
+| 必要経験 | このリポの対応箇所 |
+|:---|:---|
+| AWS上でのWebサービスのインフラ構築・運用 | `terraform/modules/` — ECS Fargate・ALB・ネットワーク設計 |
+| Terraform IaCでのインフラ管理 | `terraform/modules/` — 再利用可能なモジュール設計 |
+| CloudWatch等モニタリングツールを使った監視 | `terraform/modules/monitoring/` — 8サービス横断27本のAlarm定義 |
+| CI/CD環境の構築経験 | `docs/adr/` — ADR-001〜004でCI/CD設計判断を記録 |
+| コンテナを用いたアプリケーション実行基盤構築 | `terraform/modules/ecs-fargate-*` — ECS Fargate完全IaC化 |
+| SREとしての活動経験 | `runbooks/` + `monitoring/slos/` — 7本のRunbook・SLO定義・エラーバジェット管理 |
+| 運用自動化のためのツールを自分で設計・実装 | `runbooks/error-budget.md` — エラーバジェット消費の自動検知・対応フロー |
+
+---
+
+## SREとしてのアプローチ
+
+### 思想: 「トイルを仕組みで消す」
+
+手作業（トイル）を放置せず、**検知→自動化→Runbook化**のサイクルで運用負荷を継続的に削減する。
+
+```
+手作業で対応 → 再発したら Runbook 化 → 頻発したら自動化 → SLO で計測
+```
+
+### 実装した仕組み
+
+```
+SLO/SLI定義
+  └── エラーバジェット監視（CloudWatch Alarm）
+        └── 超過時: Runbook 参照 → 対応手順が即座に引ける
+
+週次 drift 検知（GitHub Actions）
+  └── terraform plan の差分を Issue に自動起票
+        └── インフラの意図しない変更をゼロにする
+
+CloudWatch Alarm 27本
+  ├── ECS / ALB / Lambda / CloudFront / DynamoDB
+  ├── WAF / API Gateway / SES / Budget を横断的に監視
+  └── 全て Terraform モジュールで定義・再現可能
+```
+
+### 現場への持ち込み価値
+
+- **即日適用可能**: Terraformモジュールはそのまま別環境に適用できる設計
+- **チーム展開**: RunbookとADRをGitで管理することで属人化を排除
+- **スケール**: モジュール設計により、サービス追加時の監視設定を数分で展開できる
+
+---
+
+## リポ構成
+
+```
+daihou-sre-demo/
+├── runbooks/               # インシデント対応手順書（7本）
+│   ├── ecs-service-down.md
+│   ├── ecs-task-failed.md
+│   ├── alb-5xx-spike.md
+│   ├── dynamodb-backup.md
+│   ├── error-budget.md
+│   ├── fargate-image-pull-fail.md
+│   └── terraform-state-migration.md
+│
+├── terraform/
+│   └── modules/            # 再利用可能なTerraformモジュール（5本）
+│       ├── alb/            # ALBリスナー・ターゲットグループ
+│       ├── ecs-fargate-cluster/  # ECSクラスター
+│       ├── ecs-fargate-taskdef/  # タスク定義
+│       ├── monitoring/     # CloudWatch Alarm 27本（8サービス）
+│       └── networking/     # VPC・サブネット・SG
+│
+├── docs/
+│   ├── adr/                # Architecture Decision Records（4本）
+│   │   ├── 001-terraform-state-layer-separation.md
+│   │   ├── 002-ecr-for-dev-container-image.md
+│   │   ├── ADR-003-changelog-version-release-trigger.md
+│   │   └── ADR-004-iam-role-design.md
+│   └── terraform-conventions.md  # Terraform命名・設計規約
+│
+└── monitoring/
+    └── slos/               # SLO定義・エラーバジェット基準
+        ├── cloudlogai.md
+        └── corporate-site.md
+```
+
+---
+
+## Runbook設計の考え方
+
+各Runbookは以下の構成で統一しています:
+
+1. **症状** — どのAlarmが発火したか / ユーザーへの影響
+2. **原因候補** — 可能性の高い順にリスト化
+3. **調査手順** — AWS CLI コマンド付きで即実行できる
+4. **対応手順** — ケース別に分岐（rollback / 再起動 / スケールアップ等）
+5. **自動化TODO** — 次のトイル削減候補を明示
+
+**狙い**: アラート発火から5分以内に原因特定・対応着手できる状態を維持する。
+
+---
+
+## Terraform モジュール設計の考え方
+
+### 層分離
+
+```
+infra層（VPC/IAM/ECR等）: 変更頻度低・リスク高
+  ↕ tfstate を分離（誤った apply の影響範囲を限定）
+app層（ECS/ALB/Lambda等）: 変更頻度高・デプロイ対象
+```
+
+### モジュール化の基準
+
+「同じリソース構成を2回以上書いたらモジュール化する」
+- variables で環境差分を吸収（prod/staging の違いはvariablesだけ）
+- outputs で上位モジュールへ値を渡す（ARN/IDの直書きを禁止）
+
+---
+
+## SLO定義の考え方
+
+```yaml
+# 例: CloudLogAI の可用性SLO
+可用性目標: 99.9%（月間ダウンタイム上限43分）
+計測方法: CloudWatch → ALBの5xxレート
+エラーバジェット: 0.1%/月
+バジェット消費速度: 1時間で0.14%以上消費 → 即対応
+```
+
+SLOを定義することで「どこまでは許容してどこからは対応する」の判断基準をチームで共有できる。
+
+---
 
 ## 技術スタック
 
-- （言語・フレームワーク等）
+| 領域 | 使用技術 |
+|:---|:---|
+| IaC | Terraform（infra/app層分離・モジュール設計） |
+| コンテナ | ECS Fargate |
+| 監視 | CloudWatch Alarm × 27本・SLI/SLO定義 |
+| CI/CD | GitHub Actions（drift検知・terraform plan自動化） |
+| セキュリティ | Security Hub・OIDC認証・IAMロール最小権限 |
+| ドキュメント | ADR（意思決定記録）・Runbook・Terraform規約 |
 
-## セットアップ
+---
 
-```bash
-# 依存インストール
-# 起動
-```
+## 関連リンク
 
-## ディレクトリ構成
-
-```
-{{PROJECT_NAME}}/
-├── CLAUDE.md
-├── README.md
-├── CHANGELOG.md
-├── TODO.md
-└── ...
-```
-
-## 運用ルール
-
-開発ルール・ブランチ戦略・コミット規約は以下参照:
-
-- 共通ルール: `~/.claude/CLAUDE.md`
-- プロジェクト固有: [CLAUDE.md](CLAUDE.md)
-
-## 関連
-
-- [CHANGELOG.md](CHANGELOG.md)
-- [TODO.md](TODO.md)
-- Issues: https://github.com/dhc4mens/{{PROJECT_NAME}}/issues
+- **Portfolio**: https://dhc4mens.github.io/portfolio/
+- **プライベート本番リポ**: dhc4mens/daihou-sre（面談時に画面共有可）

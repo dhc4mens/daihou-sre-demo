@@ -1,17 +1,17 @@
-# CLAUDE.md - {{PROJECT_NAME}} 固有ルール
+# CLAUDE.md - daihou-sre-demo 固有ルール
 
 > 共通ルール（ブランチ命名・コミット規約・CHANGELOG更新等）は `~/.claude/CLAUDE.md` を参照
 
 ## プロジェクト概要
 
-（プロジェクトの目的・状態・本番URL等）
+SRE基盤デモリポジトリ。daihou-sre（private）から公開用に抽出。面談・ポートフォリオ用途。
 
 ---
 
 ## ディレクトリ構成
 
 ```
-{{PROJECT_NAME}}/
+daihou-sre-demo/
 ├── CLAUDE.md             # ← このファイル（固有ルール）
 ├── README.md
 ├── CHANGELOG.md
@@ -49,4 +49,4 @@
 
 ---
 
-最終更新: YYYY-MM-DD
+最終更新: 2026-05-29
