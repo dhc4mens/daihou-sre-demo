@@ -1,0 +1,48 @@
+version: 2
+
+# dhc4mens 標準 Dependabot 設定（version updates 自動化）
+#
+# 使い方:
+# - このテンプレから展開した各リポで、使う ecosystem だけ残して不要分を削除する
+# - directory はリポの実際のパスに合わせて調整（例: /src/lambda/xxx）
+# - 初回は monthly で noise を抑え、安定したら weekly に切替検討
+#
+# ラベル type/chore, priority/low は repo-setup-template 由来の標準ラベル
+# （scripts/setup-labels.sh 実行済み前提）
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    labels:
+      - "type/chore"
+      - "priority/low"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    labels:
+      - "type/chore"
+      - "priority/low"
+
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    labels:
+      - "type/chore"
+      - "priority/low"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    labels:
+      - "type/chore"
+      - "priority/low"

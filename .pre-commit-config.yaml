@@ -1,0 +1,58 @@
+# pre-commit フレームワーク設定
+# セットアップ: scripts/install-hooks.sh を実行してください
+#
+# 使い分け:
+#   - Terraform を使わないリポ → antonbabenko セクションを削除
+#   - Python を使わないリポ → ruff セクションを削除
+#   - mypy を有効化したいリポ → mirrors-mypy セクションのコメントを外す
+
+default_install_hook_types:
+  - pre-commit
+  - pre-push
+
+repos:
+  # ── 共通フック ──────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+
+  # ── Terraform ───────────────────────────────────────────────
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.99.0
+    hooks:
+      - id: terraform_fmt
+      # terraform_validate はローカルに terraform init が必要なためオプション
+      # - id: terraform_validate
+
+  # ── Python (ruff) ───────────────────────────────────────────
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.5
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # ── Python (mypy) ── オプション: 型チェックが必要なリポで有効化 ──
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.14.1
+  #   hooks:
+  #     - id: mypy
+  #       additional_dependencies: [types-requests]
+
+  # ── ブランチ保護 (pre-push) ─────────────────────────────────
+  - repo: local
+    hooks:
+      - id: no-push-to-main
+        name: Prevent direct push to main
+        language: system
+        entry: bash -c 'branch=$(git rev-parse --abbrev-ref HEAD); if [ "$branch" = "main" ]; then echo "ERROR - Direct push to main is not allowed. Use a feature/fix/docs/refactor branch."; exit 1; fi'
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
