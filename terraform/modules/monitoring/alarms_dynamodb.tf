@@ -15,7 +15,7 @@ resource "aws_cloudwatch_metric_alarm" "dynamodb_read_throttle" {
   }
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:daihou-website-alerts"
+    var.sns_topic_arn
   ]
 
   tags = {
@@ -43,7 +43,7 @@ resource "aws_cloudwatch_metric_alarm" "dynamodb_write_throttle" {
   }
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:daihou-website-alerts"
+    var.sns_topic_arn
   ]
 
   tags = {
@@ -71,7 +71,7 @@ resource "aws_cloudwatch_metric_alarm" "dynamodb_system_errors" {
   }
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:daihou-website-alerts"
+    var.sns_topic_arn
   ]
 
   tags = {

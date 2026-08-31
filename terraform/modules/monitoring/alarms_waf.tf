@@ -18,7 +18,7 @@ resource "aws_cloudwatch_metric_alarm" "waf_high_block_rate" {
   }
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:daihou-website-alerts"
+    var.sns_topic_arn
   ]
 
   tags = {

@@ -17,4 +17,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      # pre-commit の terraform_fmt が Terraform バイナリを要求する。
+      # 入れないと exit 127 で落ちる（.tf を含む PR がすべて赤くなる）。
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.15.8"
+
       - uses: pre-commit/action@v3.0.1

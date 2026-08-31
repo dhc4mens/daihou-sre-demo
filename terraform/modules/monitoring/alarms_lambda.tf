@@ -16,7 +16,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_contact_handler_errors" {
   }
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:daihou-website-alerts"
+    var.sns_topic_arn
   ]
 
   tags = {
@@ -45,7 +45,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_contact_handler_throttles" {
   }
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:daihou-website-alerts"
+    var.sns_topic_arn
   ]
 
   tags = {

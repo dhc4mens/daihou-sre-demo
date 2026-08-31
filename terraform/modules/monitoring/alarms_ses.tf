@@ -10,7 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "ses_bounce_rate_high" {
   treat_missing_data  = "notBreaching"
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:ses-alerts"
+    var.ses_sns_topic_arn
   ]
 
   tags = {
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "ses_complaint_rate_high" {
   treat_missing_data  = "notBreaching"
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:ses-alerts"
+    var.ses_sns_topic_arn
   ]
 
   tags = {
@@ -56,7 +56,7 @@ resource "aws_cloudwatch_metric_alarm" "ses_send_count_high" {
   treat_missing_data  = "notBreaching"
 
   alarm_actions = [
-    "arn:aws:sns:ap-northeast-1:182803334083:ses-alerts"
+    var.ses_sns_topic_arn
   ]
 
   tags = {

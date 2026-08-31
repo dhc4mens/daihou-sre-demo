@@ -1,4 +1,4 @@
-# {{PROJECT_NAME}} 開発TODO
+# daihou-sre-demo 開発TODO
 
 > タスク管理は GitHub Issue で行います。
 > 新規タスクは GitHub Issue として起票してください。
@@ -9,18 +9,23 @@
 
 最新のやることリストは下記URLを参照:
 
-- https://github.com/dhc4mens/{{PROJECT_NAME}}/issues
+- [全 open Issue](https://github.com/dhc4mens/daihou-sre-demo/issues)
+- [優先度 high](https://github.com/dhc4mens/daihou-sre-demo/issues?q=is%3Aopen+label%3Apriority%2Fhigh)
+- [対応中（status/active）](https://github.com/dhc4mens/daihou-sre-demo/issues?q=is%3Aopen+label%3Astatus%2Factive)
 
-### ピックアップ中のIssue
-- （必要に応じて重要Issueを列挙）
+> 重要 Issue の一覧をここに手で書かない。**手書きの一覧は必ず古くなる**（テンプレート由来の
+> 「ピックアップ中のIssue」欄が全リポジトリで空のまま放置されていた）。
 
 ---
 
 ## ✅ 完了タスク
 
-### YYYY-MM-DD
+### 2026-05-28
 - [x] リポジトリ初期セットアップ（テンプレートから）
+
+### 2026-05-29
+- [x] SRE基盤デモリポジトリ初回リリース（v1.0.0）
 
 ---
 
-最終更新: YYYY-MM-DD
+最終更新: 2026-08-31
