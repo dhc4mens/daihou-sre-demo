@@ -15,6 +15,11 @@
 - **README に「このリポの読み方（閲覧専用）」節を追加**（#5）。`terraform/` は `modules/` のみで `environments/` を持たず **`terraform apply` は通らない**こと、実値は読み手側で入れる前提であることを明記
 - CLAUDE.md に **PUBLIC リポ向けの投稿前チェック**を追加（アカウントID・実ARN・実ドメインの grep コマンド）
 
+### Fixed
+- **CI で `.tf` を含む PR が必ず落ちていたのを修正**（#5）。`ci.yml` が Terraform をインストールしないまま pre-commit を実行しており、`terraform_fmt` フックが `exit 127`（`Neither Terraform nor OpenTofu binary could be found`）で失敗していた
+  - 初回リリース以降 PR が1件も無かったため、**本 PR が初めて踏んだ**潜在バグ
+  - `hashicorp/setup-terraform` を追加（daihou-portal の `ci.yml` から実態コピー）
+
 ### Changed
 - CLAUDE.md をテンプレートのまま（差分8行）から実態に合わせて全面更新（#5）。構成の写しは持たず README を正本として参照する形にした
 - TODO.md の `{{PROJECT_NAME}}` を置換し、手書きの「ピックアップ中のIssue」欄を GitHub のクエリリンクに置き換え（#5）
