@@ -31,7 +31,7 @@ module "ecs_cluster" {
   project_name = "daihou-gbp"
 
   secrets_manager_prefix_arns = [
-    "arn:aws:secretsmanager:ap-northeast-1:182803334083:secret:gbp/*",
+    "arn:aws:secretsmanager:ap-northeast-1:123456789012:secret:gbp/*",
   ]
 }
 ```

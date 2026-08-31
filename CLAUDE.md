@@ -4,49 +4,71 @@
 
 ## プロジェクト概要
 
-SRE基盤デモリポジトリ。daihou-sre（private）から公開用に抽出。面談・ポートフォリオ用途。
+SRE基盤デモリポジトリ。daihou-sre（private）から設計思想・実装パターン・運用ドキュメントを
+公開用に抽出したもの。**面談・ポートフォリオ用途。**
+
+- **可視性**: 🔴 **PUBLIC**
+- **リポジトリ**: https://github.com/dhc4mens/daihou-sre-demo
+- **抽出元**: dhc4mens/daihou-sre（private）
 
 ---
 
-## ディレクトリ構成
+## 🔴 このリポは閲覧専用。動かすものではない
 
-```
-daihou-sre-demo/
-├── CLAUDE.md             # ← このファイル（固有ルール）
-├── README.md
-├── CHANGELOG.md
-├── TODO.md
-└── ...
-```
+`terraform/` にあるのは `modules/` だけで **`environments/`（root module）を持たない。**
+バックエンド設定も変数の実値も無いので `terraform apply` は通らない。**設計と実装の見せ方を
+読ませるための構成**であり、動く本番環境は daihou-sre 側にある。
+
+構成・読み方の詳細は [README.md](README.md) が正本。**ここに写しを置かない。**
 
 ---
 
-## 技術スタック
+## 🔴 PUBLIC なので、書く前に必ず確認すること
 
-- （言語・フレームワーク）
-- （インフラ・デプロイ先）
-
----
-
-## よく使うコマンド
+- **AWS アカウントIDを書かない。** ダミーの `123456789012`（AWS ドキュメント用）を使う。
+  実アカウントIDは 2026-08-31 まで17箇所に露出していた（#5 で是正）
+- **実 ARN・実ドメイン・実バケット名・Secrets Manager のパスを書かない。**
+  変数で受け取る形にして既定値を持たせない（`monitoring` モジュールの `sns_topic_arn` /
+  `ses_sns_topic_arn` がその形）
+- **private リポから抽出する時は差分を見る。** 抽出元 daihou-sre の実値がそのまま入る事故が起きやすい
 
 ```bash
-# 開発・テスト・デプロイ等
+# コミット前のセルフチェック
+grep -rnE "[0-9]{12}" . --exclude-dir=.git | grep -v 123456789012
+grep -rn "daihou-llc\.com" . --exclude-dir=.git
 ```
+
+---
+
+## 抽出元との関係
+
+daihou-sre から**コピーした**ファイルがあり、本体の更新に自動追随しない。
+
+| 種類 | 本数 | 扱い |
+|:---|---:|:---|
+| ADR | 4 | 本体と重複。陳腐化の確認方法は dotfiles [#310](https://github.com/dhc4mens/dotfiles/issues/310)（ADR監査 Phase 0 item 2）で扱う |
+| Runbook | 7 | 同上 |
+| SLO 定義 | 2 | 同上 |
+
+⚠️ **本体を直した時に、ここへ反映するかを都度判断する。** 「デモとして初回リリース時点で
+意図的に固定する」という選択もありうるが、**まだ決めていない**（#5）。
 
 ---
 
 ## 注意事項（プロジェクト固有）
 
-- （本プロジェクト固有の制約・禁止事項）
+- **CHANGELOG は生かす。** 閲覧専用でも中身は更新されるため、初回リリースで固定しない
+- TODO の正本は GitHub Issue（[TODO.md](TODO.md) はリダイレクト文書）
 
 ---
 
 ## 参照リンク
 
+- [README.md](README.md) — 構成と読み方の正本
 - [CHANGELOG.md](CHANGELOG.md)
 - [TODO.md](TODO.md)
+- [ADR 一覧](docs/adr/README.md)
 
 ---
 
-最終更新: 2026-05-29
+最終更新: 2026-08-31

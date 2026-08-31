@@ -65,10 +65,10 @@ module "svc" {
   task_execution_role_arn = module.ecs_cluster.task_execution_role_arn
 
   create_ecr_repository = false
-  ecr_repository_url    = "182803334083.dkr.ecr.ap-northeast-1.amazonaws.com/benchmark"
+  ecr_repository_url    = "123456789012.dkr.ecr.ap-northeast-1.amazonaws.com/benchmark"
 
   container_definitions = [
-    { name = "benchmark", image = "182803334083.dkr.ecr.ap-northeast-1.amazonaws.com/benchmark:v1.0", essential = true }
+    { name = "benchmark", image = "123456789012.dkr.ecr.ap-northeast-1.amazonaws.com/benchmark:v1.0", essential = true }
   ]
 }
 ```

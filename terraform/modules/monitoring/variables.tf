@@ -1,7 +1,11 @@
 variable "sns_topic_arn" {
-  description = "アラート通知先 SNS トピック ARN"
+  description = "アラート通知先 SNS トピック ARN（必須。既定値は持たない）"
   type        = string
-  default     = "arn:aws:sns:ap-northeast-1:182803334083:daihou-website-alerts"
+}
+
+variable "ses_sns_topic_arn" {
+  description = "SES アラームの通知先 SNS トピック ARN。他アラームとは別系統に流すため分けている"
+  type        = string
 }
 
 # ── ECS Fargate アラーム（空文字の場合はスキップ）──
