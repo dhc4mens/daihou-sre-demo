@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+### Fixed
+- **README とモジュールの説明で、実物と合わない数値・構成の記述を直した**（#8）
+  - アラームの本数を「8サービス横断で27本」から、`terraform/modules/monitoring/` の実際の定義数（16本・7サービス）に直した。本数は図の1か所だけに書き、ほかの箇所では本数を書かないようにした。監視対象の一覧から、アラームの定義が無い ALB と Budget を外した
+  - 技術スタックの「Security Hub」を外した（このリポに対応するコードが無い）
+  - `alarms_budget.tf` のコメントが、このリポに無いファイル（`prod/app/billing.tf`）を指していたのを直した
+  - SLO の例を、`monitoring/slos/cloudlogai.md` と同じ 99.5％ にそろえた。SLO の文書には「説明用のサンプルで、実在するサービスの構成ではない」と明記し、リンク切れ（`environments/`）を直した
+  - コストの記述を料金ページへのリンクにした。「NAT に付けた EIP は課金なし」は誤りで、パブリック IPv4 アドレスは付いているものも含めて課金される（VPC ユーザーガイド）。ADR-002 のコストには、出典が無いことを注記した
+  - タグの規約の `CostCenter` に、Management アカウントでコスト配分タグとして有効化しないと集計に出ないことを書いた
+
 ### Security
 - 🔴 **AWS アカウントIDの露出を解消**（#5）。**PUBLIC リポジトリに実アカウントIDが17箇所**含まれていた（SNS トピック ARN・Secrets Manager パス・ECR リポジトリURL）
   - `terraform/modules/monitoring/` の直書き ARN 14箇所を**変数参照に置換**（`var.sns_topic_arn` / 新設した `var.ses_sns_topic_arn`）。もともと `sns_topic_arn` 変数は宣言されていたが `alarms_ecs.tf` でしか使われておらず、他6ファイルは ARN を直書きしていた

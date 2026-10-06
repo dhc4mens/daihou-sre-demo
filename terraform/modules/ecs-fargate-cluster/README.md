@@ -83,7 +83,7 @@ module "ecs_cluster" {
 ## 前提・注意
 
 - **default_tags で必須タグ注入が前提。** 呼び出し側 provider で `Project / Environment / ManagedBy / Owner / Repository / CreatedDate` を設定
-- **Container Insights enhanced** は追加コスト（$0.01/メトリクス/月）あり。本格運用前は無効化検討可
+- **Container Insights enhanced** は追加コストあり（金額は [CloudWatch の料金](https://aws.amazon.com/cloudwatch/pricing/) を参照）。本格運用前は無効化検討可
 - クラスタ単体は無料、課金は配下タスクの vCPU/メモリ単価
 
 ## 既存 daihou-gbp からの移行

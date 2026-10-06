@@ -10,7 +10,7 @@ Fargate サービスや Lambda VPC 配置など、だいほう合同会社の標
 - Internet Gateway
 - Public Subnet（`map_public_ip_on_launch = true`）
 - Private Subnet
-- NAT Gateway + EIP（オプション。月額約$32）
+- NAT Gateway + EIP（オプション。時間課金あり。下の「コスト」を参照）
 - Route Table × 2（public / private）
 - Security Group（ECS Task 用、outbound only。オプション）
 
@@ -98,10 +98,11 @@ module "networking" {
 
 ## コスト
 
-- **NAT Gateway**: 固定 約$32/月 + データ処理 $0.045/GB
-- **EIP**（NAT紐付け時は課金なし）
+金額は改定されるので、ここには書かない。最新は公式の料金ページを見る。
+
+- **NAT Gateway**: 時間課金 ＋ 処理したデータ量の課金（[VPC の料金](https://aws.amazon.com/vpc/pricing/)）
+- **EIP（パブリック IPv4）**: **NAT Gateway に付けていても課金される。** AWS はリソースに付いているものも含めて、すべてのパブリック IPv4 アドレスに課金する（[VPC ユーザーガイド](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html)）
 - **VPC / Subnet / IGW / Route Table**: 無料
-- **EIP（未紐付け）**: $3.6/月
 
 ## 既存 daihou-gbp からの移行
 

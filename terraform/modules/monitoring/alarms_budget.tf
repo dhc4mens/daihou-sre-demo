@@ -1,2 +1,2 @@
-# AWS/Billing EstimatedCharges は us-east-1 にしか存在しないため
-# このアラームは prod/app/billing.tf (provider = aws.us_east_1) で管理する。
+# コストの監視は、このモジュールの CloudWatch アラームでは行わない。
+# 閾値型のコスト監視は AWS Budgets で行う（このファイルにリソースは無い）。

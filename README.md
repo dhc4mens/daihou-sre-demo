@@ -12,7 +12,7 @@
 |:---|:---|
 | AWS上でのWebサービスのインフラ構築・運用 | `terraform/modules/` — ECS Fargate・ALB・ネットワーク設計 |
 | Terraform IaCでのインフラ管理 | `terraform/modules/` — 再利用可能なモジュール設計 |
-| CloudWatch等モニタリングツールを使った監視 | `terraform/modules/monitoring/` — 8サービス横断27本のAlarm定義 |
+| CloudWatch等モニタリングツールを使った監視 | `terraform/modules/monitoring/` — サービス横断のAlarm定義 |
 | CI/CD環境の構築経験 | `docs/adr/` — ADR-001〜004でCI/CD設計判断を記録 |
 | コンテナを用いたアプリケーション実行基盤構築 | `terraform/modules/ecs-fargate-*` — ECS Fargate完全IaC化 |
 | SREとしての活動経験 | `runbooks/` + `monitoring/slos/` — 7本のRunbook・SLO定義・エラーバジェット管理 |
@@ -31,7 +31,7 @@
 | 見るもの | どこ |
 |:---|:---|
 | モジュールの設計判断 | `terraform/modules/*/README.md` — 入出力と分割の基準 |
-| 監視の考え方 | `terraform/modules/monitoring/` — 8サービス横断のアラーム定義 |
+| 監視の考え方 | `terraform/modules/monitoring/` — サービス横断のアラーム定義 |
 | 障害対応の手順 | `runbooks/` — 7本 |
 | SLO とエラーバジェット | `monitoring/slos/` |
 | 設計判断の記録 | `docs/adr/` |
@@ -67,9 +67,9 @@ SLO/SLI定義
   └── terraform plan の差分を Issue に自動起票
         └── インフラの意図しない変更をゼロにする
 
-CloudWatch Alarm 27本
-  ├── ECS / ALB / Lambda / CloudFront / DynamoDB
-  ├── WAF / API Gateway / SES / Budget を横断的に監視
+CloudWatch Alarm 16本（terraform/modules/monitoring/ の定義数）
+  ├── ECS / Lambda / CloudFront / DynamoDB
+  ├── WAF / API Gateway / SES を横断的に監視
   └── 全て Terraform モジュールで定義・再現可能
 ```
 
@@ -99,7 +99,7 @@ daihou-sre-demo/
 │       ├── alb/            # ALBリスナー・ターゲットグループ
 │       ├── ecs-fargate-cluster/  # ECSクラスター
 │       ├── ecs-fargate-taskdef/  # タスク定義
-│       ├── monitoring/     # CloudWatch Alarm 27本（8サービス）
+│       ├── monitoring/     # CloudWatch Alarm（サービスごとに1ファイル）
 │       └── networking/     # VPC・サブネット・SG
 │
 ├── docs/
@@ -153,11 +153,11 @@ app層（ECS/ALB/Lambda等）: 変更頻度高・デプロイ対象
 ## SLO定義の考え方
 
 ```yaml
-# 例: CloudLogAI の可用性SLO
-可用性目標: 99.9%（月間ダウンタイム上限43分）
+# 例: 可用性SLO（説明用のサンプル。値の正本は monitoring/slos/cloudlogai.md）
+可用性目標: 99.5%（月間ダウンタイム上限 約3.6時間）
 計測方法: CloudWatch → ALBの5xxレート
-エラーバジェット: 0.1%/月
-バジェット消費速度: 1時間で0.14%以上消費 → 即対応
+エラーバジェット: 0.5%/月
+バジェット消費速度: 1時間で月間バジェットの2%以上を消費（通常の14.4倍速） → 即対応
 ```
 
 SLOを定義することで「どこまでは許容してどこからは対応する」の判断基準をチームで共有できる。
@@ -170,9 +170,9 @@ SLOを定義することで「どこまでは許容してどこからは対応�
 |:---|:---|
 | IaC | Terraform（infra/app層分離・モジュール設計） |
 | コンテナ | ECS Fargate |
-| 監視 | CloudWatch Alarm × 27本・SLI/SLO定義 |
+| 監視 | CloudWatch Alarm・SLI/SLO定義 |
 | CI/CD | GitHub Actions（drift検知・terraform plan自動化） |
-| セキュリティ | Security Hub・OIDC認証・IAMロール最小権限 |
+| セキュリティ | OIDC認証・IAMロール最小権限 |
 | ドキュメント | ADR（意思決定記録）・Runbook・Terraform規約 |
 
 ---

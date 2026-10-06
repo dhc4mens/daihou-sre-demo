@@ -126,7 +126,7 @@ provider "aws" {
 | `Client` | `takatsuen` / `mishimaya` | クライアント別利用者（マルチテナントで必須） |
 | `Tier` | `public` / `private` | サブネット等の区分 |
 | `DataClassification` | `public` / `internal` / `confidential` / `pii` | データ分類（個人情報含むリソースに必須） |
-| `CostCenter` | `gbp-takatsuen` / `cloudlogai-dev` | 請求按分（複数クライアント時に便利） |
+| `CostCenter` | `gbp-takatsuen` / `cloudlogai-dev` | 請求按分の候補。Cost Explorer で使うには、組織の Management アカウントで**コスト配分タグとして有効化**する必要がある（付けただけでは集計に出ない） |
 | `ExpiryDate` | `2026-12-31` / `none` | リソースのTTL。プロトタイプ・dev環境の放置防止。将来Lambda+EventBridgeで期限切れ通知に活用 |
 | `BackupRequired` | `true` / `false` | AWS Backupのスコープ対象か否か |
 | `BackupSchedule` | `daily` / `weekly` / `none` | バックアップ頻度（BackupRequired=true の場合に必須） |
