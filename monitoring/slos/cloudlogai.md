@@ -1,7 +1,9 @@
 # SLI/SLO定義 — CloudLogAI
 
-最終更新: 2026-04-25
+最終更新: 2026-10-06
 対象: CloudLogAI（ECS Fargate + ALB + DynamoDB + Lambda + Cognito）
+
+> **この文書は SLO 設計の説明用サンプルです。** 下の構成と重要度は、SLI の選び方を示すために置いた想定のもので、実在するサービスの構成や稼働状況を表すものではありません。
 
 ---
 
@@ -10,7 +12,7 @@
 | 項目 | 内容 |
 |:---|:---|
 | 構成 | ECS Fargate（API）+ ALB + DynamoDB + Lambda（異常検知）+ Cognito（認証） |
-| 重要度 | High（本番SaaS・課金サービス） |
+| 重要度 | High（想定: 本番の SaaS） |
 | 計測ソース | CloudWatch（ALB / ECS / DynamoDB / Lambda メトリクス） |
 
 ---
@@ -50,5 +52,5 @@
 
 ## 関連リソース
 
-- CloudWatch Alarm: `terraform/environments/prod/app/monitoring.tf` 参照
+- CloudWatch Alarm: `terraform/modules/monitoring/` 参照（このリポは `modules/` だけで、`environments/` は持たない）
 - Runbook: `runbooks/error-budget.md`
