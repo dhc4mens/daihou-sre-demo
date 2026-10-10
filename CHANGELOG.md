@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Claude 設定を dotfiles ADR-013 に揃えた（dotfiles#344）: `.claude/settings.json` から `model` / `effortLevel` を外した（プロジェクト層の値は個人の選択を上書きするため）
+
 ### Fixed
 - **README とモジュールの説明で、実物と合わない数値・構成の記述を直した**（#8）
   - アラームの本数を「8サービス横断で27本」から、`terraform/modules/monitoring/` の実際の定義数（16本・7サービス）に直した。本数は図の1か所だけに書き、ほかの箇所では本数を書かないようにした。監視対象の一覧から、アラームの定義が無い ALB と Budget を外した
