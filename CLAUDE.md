@@ -14,8 +14,9 @@
   ```bash
   grep -rnE "[0-9]{12}" . --exclude-dir=.git | grep -v 123456789012
   grep -rn "daihou-llc\.com" . --exclude-dir=.git
+  grep -rnE "100\.[0-9]+\.[0-9]+\.[0-9]+" . --exclude-dir=.git   # Tailscale などの IP
   ```
 
 ## やらないこと
 
-- 実アカウント ID・実 ARN・実ドメイン・実バケット名・Secrets Manager のパスを書かない
+- 実アカウント ID・実 ARN・実ドメイン・実バケット名・Secrets Manager のパス・IP（Tailscale の 100.x を含む）・CloudFront などのリソース ID を書かない

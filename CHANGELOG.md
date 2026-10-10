@@ -6,7 +6,7 @@
 
 ### Changed
 - **ルートの CLAUDE.md を「毎ターン要る事実だけ」に縮めた**（dhc4mens/dotfiles#344 の Phase 2・2026-10-10）
-  - 74行 → 21行。共通ルールと README の参照・CHANGELOG と TODO の扱い（グローバルの写し）・参照リンク・最終更新の行を消し、事実・作法・やらないことの3節にした
+  - 74行 → 22行。共通ルールと README の参照・CHANGELOG と TODO の扱い（グローバルの写し）・参照リンク・最終更新の行を消し、事実・作法・やらないことの3節にした
   - 「本体から反映するか固定するかは未決（#5）」を消した。#5 は閉じており、コピーの陳腐化の扱いは dotfiles#310 で追っている
   - PUBLIC の注意（ダミーのアカウント ID・実値を書かない・コミット前の grep 2本）はそのまま残した
   - `docs/SETUP.md` の「Claude Code per-project 設定」節に、展開時にコピーされた古い案内（`.claude/settings.json` に `model: sonnet` / `effortLevel: medium` を置く）が残っていたので、テンプレートの今の節（model / effortLevel はユーザー層が正本で、ここには書かない）に置き換えた
