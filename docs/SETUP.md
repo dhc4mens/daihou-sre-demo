@@ -57,26 +57,21 @@ alerts（脆弱性検知）はリポ単位で別途 `gh api -X PUT /repos/OWNER/
 
 ## Claude Code per-project 設定（`.claude/settings.json`）
 
-テンプレートには `.claude/settings.json` が同梱されている。
+テンプレートには `.claude/settings.json` が同梱されている（中身はほぼ空）。
 
 ```json
 {
-  "model": "sonnet",
-  "effortLevel": "medium",
   "permissions": {
     "additionalDirectories": []
   }
 }
 ```
 
-展開後は以下を調整：
+🔴 **`model` / `effortLevel` はここに書かない**（dotfiles ADR-013 Decision 8）。プロジェクトの settings はユーザーの settings（`~/.claude/settings.json`）の値を**上書き**するので、ここに書くと、このリポで起動した瞬間に個人のモデル選択が潰れる。どのモデル・effort で作業するかは個人の選択で、ユーザー層が正本。
 
-| 設定 | 選択肢 | 目安 |
-|:---|:---|:---|
-| `model` | `haiku` / `sonnet` / `opus` | 通常は `sonnet` で十分 |
-| `effortLevel` | `low` / `medium` / `high` / `xhigh` | 設計・アーキレビュー → `high`、Issue処理 → `medium` |
+このファイルに書くのは「このリポを使う誰にとっても必要なもの」だけ（リポ固有の permissions・env など）。
 
-**個人のローカル上書き**は `.claude/settings.local.json` を使う（`.gitignore` 済み、コミット不要）:
+**自分だけの上書き**は `.claude/settings.local.json` を使う（`.gitignore` 済み、コミット不要）。秘密は平書きしない（MCP の認証は `headersHelper`）:
 
 ```json
 { "effortLevel": "high" }
