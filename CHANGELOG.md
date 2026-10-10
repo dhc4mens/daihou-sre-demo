@@ -5,6 +5,11 @@
 ## [Unreleased]
 
 ### Changed
+- **ルートの CLAUDE.md を「毎ターン要る事実だけ」に縮めた**（dhc4mens/dotfiles#344 の Phase 2・2026-10-10）
+  - 74行 → 22行。共通ルールと README の参照・CHANGELOG と TODO の扱い（グローバルの写し）・参照リンク・最終更新の行を消し、事実・作法・やらないことの3節にした
+  - 「本体から反映するか固定するかは未決（#5）」を消した。#5 は閉じており、コピーの陳腐化の扱いは dotfiles#310 で追っている
+  - PUBLIC の注意（ダミーのアカウント ID・実値を書かない・コミット前の grep 2本）はそのまま残した
+  - `docs/SETUP.md`（展開時にコピーしたテンプレートの手順書）が古くなっていた（`.claude/settings.json` に model を置く案内・廃止済みのラベル `status/wip` など）ので、中身をテンプレートの `docs/SETUP.md` への案内だけにした（dotfiles#344 の Phase 3）
 - Claude 設定を dotfiles ADR-013 に揃えた（dotfiles#344）: `.claude/settings.json` から `model` / `effortLevel` を外した（プロジェクト層の値は個人の選択を上書きするため）
 
 ### Fixed
